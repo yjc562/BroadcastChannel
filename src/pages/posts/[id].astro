@@ -1,14 +1,17 @@
 ---
-import { getEnv } from '../../lib/env'
+import { getEnv, getChannels } from '../../lib/env'
 import voidFile from '../../assets/void.png'
 import List from '../../components/list.astro'
 import { getChannelInfo } from '../../lib/telegram'
 
 const { SITE_URL } = Astro.locals
+const channels = getChannels(import.meta.env, Astro)
+const channelName = channels[0] // Use the first channel to fetch post details
 
-const channelInfo = await getChannelInfo(Astro)
+const channelInfo = await getChannelInfo(Astro, { channel: channelName })
 
 const post = await getChannelInfo(Astro, {
+  channel: channelName,
   type: 'post',
   id: Astro.params.id,
 })
