@@ -6,15 +6,25 @@ import { getChannelInfo } from '../../lib/telegram'
 
 const { SITE_URL } = Astro.locals
 const channels = getChannels(import.meta.env, Astro)
-const channelName = channels[0] // Use the first channel to fetch post details
+let post
+let channelInfo
 
-const channelInfo = await getChannelInfo(Astro, { channel: channelName })
-
-const post = await getChannelInfo(Astro, {
-  channel: channelName,
-  type: 'post',
-  id: Astro.params.id,
-})
+for (const channelName of channels) {
+  try {
+    const p = await getChannelInfo(Astro, {
+      channel: channelName,
+      type: 'post',
+      id: Astro.params.id,
+    })
+    if (p && p.id) {
+      post = p
+      channelInfo = await getChannelInfo(Astro, { channel: channelName })
+      break
+    }
+  } catch (error) {
+    console.error(`Failed to fetch post ${Astro.params.id} from channel ${channelName}`, error)
+  }
+}
 
 const channel = {
   ...(channelInfo || {}),
