@@ -1,15 +1,22 @@
 import rss from '@astrojs/rss'
 import sanitizeHtml from 'sanitize-html'
 import { getChannelInfo } from '../lib/telegram'
-import { getEnv } from '../lib/env'
+import { getEnv, getChannels } from '../lib/env'
+import dayjs from '../lib/dayjs'
 
 export async function GET(Astro) {
   const { SITE_URL } = Astro.locals
   const tag = Astro.url.searchParams.get('tag')
-  const channel = await getChannelInfo(Astro, {
-    q: tag ? `#${tag}` : '',
-  })
-  const posts = channel.posts || []
+
+  const channels = getChannels(import.meta.env, Astro)
+  const channelInfos = await Promise.all(channels.map(channel => getChannelInfo(Astro, { channel, q: tag ? `#${tag}` : '' })))
+
+  const posts = channelInfos.flatMap(info => info.posts).sort((a, b) => dayjs(b.datetime).unix() - dayjs(a.datetime).unix())
+
+  const channel = {
+    title: 'All Channels',
+    description: 'Posts from all channels',
+  }
 
   const request = Astro.request
   const url = new URL(request.url)
