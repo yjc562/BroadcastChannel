@@ -173,18 +173,17 @@ function getPost($, item, { channel, staticProxy, index = 0 }) {
 
 const unnessaryHeaders = ['host', 'cookie', 'origin', 'referer']
 
-export async function getChannelInfo(Astro, { before = '', after = '', q = '', type = 'list', id = '' } = {}) {
-  const cacheKey = JSON.stringify({ before, after, q, type, id })
+export async function getChannelInfo(Astro, { channel, before = '', after = '', q = '', type = 'list', id = '' } = {}) {
+  const cacheKey = JSON.stringify({ channel, before, after, q, type, id })
   const cachedResult = cache.get(cacheKey)
 
   if (cachedResult) {
-    console.info('Match Cache', { before, after, q, type, id })
+    console.info('Match Cache', { channel, before, after, q, type, id })
     return JSON.parse(JSON.stringify(cachedResult))
   }
 
   // Where t.me can also be telegram.me, telegram.dog
   const host = getEnv(import.meta.env, Astro, 'TELEGRAM_HOST') ?? 't.me'
-  const channel = getEnv(import.meta.env, Astro, 'CHANNEL')
   const staticProxy = getEnv(import.meta.env, Astro, 'STATIC_PROXY') ?? '/static/'
 
   const url = id ? `https://${host}/${channel}/${id}?embed=1&mode=tme` : `https://${host}/s/${channel}`

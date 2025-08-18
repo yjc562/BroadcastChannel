@@ -1,8 +1,20 @@
 ---
 import List from '../components/list.astro'
 import { getChannelInfo } from '../lib/telegram'
+import { getChannels } from '../lib/env'
+import dayjs from '../lib/dayjs'
 
-const channel = await getChannelInfo(Astro)
+const channels = getChannels(import.meta.env, Astro)
+const channelInfos = await Promise.all(channels.map(channel => getChannelInfo(Astro, { channel })))
+
+const posts = channelInfos.flatMap(info => info.posts).sort((a, b) => dayjs(b.datetime).unix() - dayjs(a.datetime).unix())
+
+const channel = {
+  posts,
+  title: 'All Channels',
+  description: 'Posts from all channels',
+  avatar: '',
+}
 ---
 
 <List channel={channel} after={false} />

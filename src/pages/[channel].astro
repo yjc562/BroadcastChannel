@@ -1,0 +1,17 @@
+---
+import List from '../components/list.astro'
+import { getChannelInfo } from '../lib/telegram'
+import { getChannels } from '../lib/env'
+
+export async function getStaticPaths() {
+  const channels = (import.meta.env.CHANNEL || '').split(',').map(c => c.trim()).filter(Boolean)
+  return channels.map(channel => ({
+    params: { channel },
+  }))
+}
+
+const { channel: channelName } = Astro.params
+const channel = await getChannelInfo(Astro, { channel: channelName })
+---
+
+<List channel={channel} after={false} />
