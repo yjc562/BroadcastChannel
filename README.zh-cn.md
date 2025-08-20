@@ -69,14 +69,14 @@
 ### Docker
 
 1. `docker pull ghcr.io/ccbikai/broadcastchannel:main`
-2. `docker run -d --name broadcastchannel -p 4321:4321 -e CHANNEL=miantiao_me ghcr.io/ccbikai/broadcastchannel:main`
+2. `docker run -d --name broadcastchannel -p 4321:4321 -e CHANNELS=miantiao_me ghcr.io/ccbikai/broadcastchannel:main`
 
 ### Serverless
 
 1. [Fork](https://github.com/ccbikai/BroadcastChannel/fork) 此项目到你 GitHub
 2. 在 Cloudflare/Netlify/Vercel 创建项目
 3. 选择 `BroadcastChannel` 项目和 `Astro` 框架
-4. 配置环境变量 `CHANNEL` 为你的频道名称。此为最小化配置，更多配置见下面的配置项
+4. 配置环境变量 `CHANNELS` 为你的频道名称（多个频道使用逗号分隔）。此为最小化配置，更多配置见下面的配置项
 5. 保存并部署
 6. 绑定域名（可选）。
 7. 更新代码，参考 GitHub 官方文档 [从 Web UI 同步分叉分支](https://docs.github.com/zh/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork#syncing-a-fork-branch-from-the-web-ui)。
@@ -84,12 +84,12 @@
 ## ⚒️ 配置
 
 ```env
-## Telegram 频道用户名，必须配置。 t.me/ 后面那串字符
-CHANNEL=miantiao_me
+## Telegram 频道用户名，使用逗号分隔。
+CHANNELS=channel1,channel2
 
-## 语言和时区设置，语言选项见[dayjs](https://github.com/iamkun/dayjs/tree/dev/src/locale)
-LOCALE=zh-cn
-TIMEZONE=Asia/Shanghai
+## 对应的语言和时区设置，使用逗号分隔。
+LOCALES=zh-cn,zh-cn
+TIMEZONES=Asia/Shanghai,Asia/Shanghai
 
 ## 社交媒体用户名
 TELEGRAM=ccbikai
